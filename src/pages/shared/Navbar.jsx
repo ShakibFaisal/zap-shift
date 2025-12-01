@@ -8,14 +8,20 @@ const NavBar = () => {
   const links = (
     <>
       <li>
-        <NavLink to="">Services</NavLink>
+        <NavLink className={'mr-2.5'} to="/">Services</NavLink>
       </li>
       <li>
-        <NavLink to="/coverage">Coverage</NavLink>
+        <NavLink className={'mr-2.5'} to="/coverage">Coverage</NavLink>
       </li>
       <li>
-        <NavLink to="">About Us</NavLink>
+        <NavLink className={'mr-2.5'} to="">About Us</NavLink>
       </li>
+      <li>
+        <NavLink to="/send-parcel">Send Parcel</NavLink>
+      </li>
+      {user&&<><li>
+        <NavLink to="/dashboard/my-parcels">My Parcels</NavLink>
+      </li></>}
     </>
   );
   const logout = () => {
@@ -44,7 +50,7 @@ const NavBar = () => {
           </div>
           <ul
             tabIndex="-1"
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            className="menu  menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
             {links}
           </ul>
