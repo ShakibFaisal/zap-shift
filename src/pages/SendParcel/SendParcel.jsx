@@ -1,8 +1,7 @@
 import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useLoaderData } from 'react-router';
+import { useLoaderData, useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
-
 import UseAuth from '../../hooks/UseAuth';
 import UseAxiosSecure from '../../hooks/UseAxiosSecure';
 
@@ -16,6 +15,7 @@ const SendParcel = () => {
     } = useForm();
     const { user } = UseAuth();
     const axiosSecure = UseAxiosSecure();
+    const navigate = useNavigate();
 
     const serviceCenters = useLoaderData();
     const regionsDuplicate = serviceCenters.map(c => c.region);
@@ -57,6 +57,7 @@ const SendParcel = () => {
         }
 
         console.log('cost', cost);
+        data.cost = cost;
 
         Swal.fire({
             title: "Agree with the Cost?",
@@ -65,7 +66,7 @@ const SendParcel = () => {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "I agree!"
+            confirmButtonText: "Confirm and Continue Payment!"
         }).then((result) => {
             if (result.isConfirmed) {
 
@@ -73,13 +74,19 @@ const SendParcel = () => {
                 axiosSecure.post('/parcels', data)
                     .then(res => {
                         console.log('after saving parcel', res.data);
+                        if (res.data.insertedId) {
+                            navigate('/dashboard/my-parcels')
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: "Parcel has created. Please Pay",
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+                        }
                     })
 
-                // Swal.fire({
-                //     title: "Deleted!",
-                //     text: "Your file has been deleted.",
-                //     icon: "success"
-                // });
+
             }
         });
 
@@ -122,9 +129,9 @@ const SendParcel = () => {
                         <h4 className="text-2xl font-semibold">Sender Details</h4>
                         {/* sender name */}
                         <label className="label">Sender Name</label>
-                        <input type="text" {...register('senderName')} 
-                        defaultValue={user?.displayName}
-                        className="input w-full" placeholder="Sender Name" />
+                        <input type="text" {...register('senderName')}
+                            defaultValue={user?.displayName}
+                            className="input w-full" placeholder="Sender Name" />
 
                         {/* sender email */}
                         <label className="label">Sender Email</label>
